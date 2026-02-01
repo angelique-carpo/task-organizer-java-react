@@ -1,8 +1,0 @@
-# IntelliJ / IDE
-.idea/
-*.iml
-# Maven
-target/
-# OS
-.DS_Store
-Thumbs.db
