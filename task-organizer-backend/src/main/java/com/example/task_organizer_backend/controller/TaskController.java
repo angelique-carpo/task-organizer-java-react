@@ -1,19 +1,25 @@
 package com.example.task_organizer_backend.controller;
 
 import com.example.task_organizer_backend.model.Task;
+import com.example.task_organizer_backend.service.TaskService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/tasks")
 public class TaskController {
 
-    @GetMapping("/api/tasks")
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    @GetMapping
     public List<Task> getTasks() {
-        return List.of(
-                new Task(1L, "First task", false),
-                new Task(2L, "Second task", true)
-        );
+        return taskService.getAllTasks();
     }
 }
