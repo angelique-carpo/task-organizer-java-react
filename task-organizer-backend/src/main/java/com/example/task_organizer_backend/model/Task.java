@@ -23,4 +23,12 @@ public class Task {
     public boolean isCompleted() {
         return completed;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
 }

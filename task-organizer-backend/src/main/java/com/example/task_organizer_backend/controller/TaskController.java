@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+
 
 
 import java.util.List;
@@ -30,15 +34,36 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskService.addTask(task);
+    public ResponseEntity<?> createTask(@RequestBody Task task) {
+        Task createdTask = taskService.addTask(task);
+
+        if (createdTask == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Title is required");
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdTask);
     }
+
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTaskById(id);
     }
+
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(id, task);
+
+        if (updatedTask == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Task not found or invalid title");
+        }
+
+        return ResponseEntity.ok(updatedTask);
     }
+
 }

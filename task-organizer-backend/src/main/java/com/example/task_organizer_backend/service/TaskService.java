@@ -21,6 +21,10 @@ public class TaskService {
     }
 
     public Task addTask(Task task) {
+        if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
+            return null;
+        }
+
         tasks.add(task);
         return task;
     }
@@ -29,6 +33,10 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, Task updatedTask) {
+        if (updatedTask.getTitle() == null || updatedTask.getTitle().trim().isEmpty()) {
+            return null;
+        }
+
         for (Task task : tasks) {
             if (task.getId().equals(id)) {
                 task.setTitle(updatedTask.getTitle());
