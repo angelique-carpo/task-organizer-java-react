@@ -1,4 +1,6 @@
 package com.example.task_organizer_backend.controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.example.task_organizer_backend.model.Task;
 import com.example.task_organizer_backend.service.TaskService;
@@ -34,36 +36,34 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTask(@RequestBody Task task) {
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task createdTask = taskService.addTask(task);
 
         if (createdTask == null) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Title is required");
+            return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(createdTask);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTaskById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        Task updatedTask = taskService.updateTask(id, task);
+    public ResponseEntity<Task> updateTask(
+            @PathVariable Long id,
+            @RequestBody Task task) {
 
-        if (updatedTask == null) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("Task not found or invalid title");
+        Task updated = taskService.updateTask(id, task);
+
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(updatedTask);
+        return ResponseEntity.ok(updated);
     }
 
 }
