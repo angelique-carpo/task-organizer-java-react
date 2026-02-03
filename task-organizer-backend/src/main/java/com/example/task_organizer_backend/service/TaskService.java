@@ -28,10 +28,9 @@ public class TaskService {
         tasks.add(task);
         return task;
     }
-    public void deleteTaskById(Long id) {
-        tasks.removeIf(task -> task.getId().equals(id));
+    public boolean deleteTaskById(Long id) {
+        return tasks.removeIf(task -> task.getId().equals(id));
     }
-
     public Task updateTask(Long id, Task updatedTask) {
         if (updatedTask.getTitle() == null || updatedTask.getTitle().trim().isEmpty()) {
             return null;
