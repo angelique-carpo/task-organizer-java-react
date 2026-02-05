@@ -4,6 +4,7 @@ function App() {
 
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tasks")
@@ -21,7 +22,8 @@ function App() {
       },
       body: JSON.stringify({
         title: newTaskTitle,
-        completed: false
+        completed: false,
+        dueDate: dueDate || null
       })
     })
       .then(res => res.json())
@@ -29,6 +31,14 @@ function App() {
         setTasks([...tasks, createdTask]);
         setNewTaskTitle("");
       });
+  };
+
+  const deleteTask = async (id) => {
+    await fetch(`http://localhost:8080/api/tasks/${id}`, {
+      method: "DELETE",
+    });
+
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
   return (
@@ -42,12 +52,22 @@ function App() {
         onChange={(e) => setNewTaskTitle(e.target.value)}
       />
 
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+      />
+
       <button onClick={addTask}>Add Task</button>
 
       <ul>
-        {tasks.map(task => (
+        {tasks.map((task) => (
           <li key={task.id}>
             {task.title} — {task.completed ? "done" : "not done"}
+
+            <button onClick={() => deleteTask(task.id)}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>
