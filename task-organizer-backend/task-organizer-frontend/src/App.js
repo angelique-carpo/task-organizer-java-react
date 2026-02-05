@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import TaskCalendar from "./components/TaskCalendar";
 
 function App() {
 
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [newTaskDate, setNewTaskDate] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tasks")
@@ -45,6 +47,8 @@ function App() {
     <div style={{ padding: "20px" }}>
       <h1>Task Organizer</h1>
 
+      <TaskCalendar />
+
       <input
         type="text"
         placeholder="Enter new task..."
@@ -54,7 +58,7 @@ function App() {
 
       <input
         type="date"
-        value={dueDate}
+        value={newTaskDate}
         onChange={(e) => setDueDate(e.target.value)}
       />
 
