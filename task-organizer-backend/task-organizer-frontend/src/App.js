@@ -7,6 +7,7 @@ function App() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [newTaskDate, setNewTaskDate] = useState(null);
+  const [newTaskDescription, setNewTaskDescription] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tasks")
@@ -24,8 +25,9 @@ function App() {
       },
       body: JSON.stringify({
         title: newTaskTitle,
+        description: newTaskDescription,
         completed: false,
-        dueDate: dueDate || null
+        dueDate: newTaskDate
       })
     })
       .then(res => res.json())
@@ -57,6 +59,13 @@ function App() {
       />
 
       <input
+        type="text"
+        placeholder="Task description..."
+        value={newTaskDescription}
+        onChange={(e) => setNewTaskDescription(e.target.value)}
+      />
+
+      <input
         type="date"
         value={newTaskDate}
         onChange={(e) => setDueDate(e.target.value)}
@@ -65,13 +74,21 @@ function App() {
       <button onClick={addTask}>Add Task</button>
 
       <ul>
-        {tasks.map((task) => (
+        {tasks.map(task => (
           <li key={task.id}>
-            {task.title} — {task.completed ? "done" : "not done"}
+            <strong>{task.title}</strong>
 
-            <button onClick={() => deleteTask(task.id)}>
-              Delete
-            </button>
+            <div>{task.description}</div>
+
+            {task.dueDate && (
+              <div style={{ fontSize: "0.9em", color: "#555" }}>
+                📅 {new Date(task.dueDate).toLocaleDateString("el-GR")}
+              </div>
+            )}
+
+            — {task.completed ? "done" : "not done"}
+
+            <button onClick={() => deleteTask(task.id)}>Delete</button>
           </li>
         ))}
       </ul>

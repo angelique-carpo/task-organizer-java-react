@@ -8,12 +8,14 @@ public class Task {
     private String title;
     private boolean completed;
     private LocalDate dueDate;
+    private String description;
 
-    public Task(Long id, String title, boolean completed, LocalDate dueDate) {
+    public Task(Long id, String title, boolean completed, LocalDate dueDate, String description) {
         this.id = id;
         this.title = title;
         this.completed = completed;
         this.dueDate = dueDate;
+        this.description = description;
     }
 
     public LocalDate getDueDate() {
@@ -46,6 +48,14 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
 

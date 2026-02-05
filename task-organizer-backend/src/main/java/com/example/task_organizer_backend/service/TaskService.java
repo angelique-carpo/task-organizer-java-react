@@ -14,8 +14,8 @@ public class TaskService {
     private Long nextId = 3L;
 
     public TaskService() {
-        tasks.add(new Task(1L, "First task", false, LocalDate.now()));
-        tasks.add(new Task(2L, "Second task", true, LocalDate.now().plusDays(1)));
+        tasks.add(new Task(1L, "First task", false, LocalDate.now(), "Example description"));
+        tasks.add(new Task(2L, "Second task", true, LocalDate.now().plusDays(1), "Another task"));
     }
 
     public List<Task> getAllTasks() {
