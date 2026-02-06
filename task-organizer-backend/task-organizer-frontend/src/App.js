@@ -45,55 +45,65 @@ function App() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>Task Organizer</h1>
+return (
+  <div style={{ padding: "20px" }}>
+    <h1>Task Organizer</h1>
 
-      <TaskCalendar />
+    <div style={{
+      display: "flex",
+      gap: "30px",
+      alignItems: "flex-start"
+    }}>
 
-      <input
-        type="text"
-        placeholder="Enter new task..."
-        value={newTaskTitle}
-        onChange={(e) => setNewTaskTitle(e.target.value)}
-      />
+      {/* TASKS */}
+      <div style={{ flex: 1 }}>
 
-      <input
-        type="text"
-        placeholder="Task description..."
-        value={newTaskDescription}
-        onChange={(e) => setNewTaskDescription(e.target.value)}
-      />
+        <h2>My Tasks</h2>
 
-      <input
-        type="date"
-        value={newTaskDate}
-        onChange={(e) => setDueDate(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Enter new task..."
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+        />
 
-      <button onClick={addTask}>Add Task</button>
+        <input
+          type="text"
+          placeholder="Task description..."
+          value={newTaskDescription}
+          onChange={(e) => setNewTaskDescription(e.target.value)}
+        />
 
-      <ul>
-        {tasks.map(task => (
-          <li key={task.id}>
-            <strong>{task.title}</strong>
+        <input
+          type="date"
+          value={newTaskDate}
+          onChange={(e) => setNewTaskDate(e.target.value)}
+        />
 
-            <div>{task.description}</div>
+        <button onClick={addTask}>Add Task</button>
 
-            {task.dueDate && (
-              <div style={{ fontSize: "0.9em", color: "#555" }}>
-                📅 {new Date(task.dueDate).toLocaleDateString("el-GR")}
-              </div>
-            )}
+        <ul>
+          {tasks.map(task => (
+            <li key={task.id}>
+              <strong>{task.title}</strong>
+              <div>{task.description}</div>
+              <div>{task.dueDate}</div>
+              <button onClick={() => deleteTask(task.id)}>Delete</button>
+            </li>
+          ))}
+        </ul>
 
-            — {task.completed ? "done" : "not done"}
+      </div>
 
-            <button onClick={() => deleteTask(task.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      {/* CALENDAR */}
+      <div style={{ width: "350px" }}>
+        <TaskCalendar />
+      </div>
+
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
