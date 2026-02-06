@@ -1,50 +1,46 @@
 package com.example.task_organizer_backend.service;
 
 import com.example.task_organizer_backend.model.Task;
+import com.example.task_organizer_backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
 public class TaskService {
 
-    private final List<Task> tasks = new ArrayList<>();
+    private final TaskRepository taskRepository;
 
-    private Long nextId = 3L;
-
-    public TaskService() {
-        tasks.add(new Task(1L, "First task", false, LocalDate.now(), "Example description"));
-        tasks.add(new Task(2L, "Second task", true, LocalDate.now().plusDays(1), "Another task"));
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
     public List<Task> getAllTasks() {
-        return tasks;
+        return taskRepository.findAll();
     }
 
     public Task addTask(Task task) {
         if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
             return null;
         }
-
-        task.setId(nextId++);
-        tasks.add(task);
-        return task;
+        return taskRepository.save(task);
     }
 
     public boolean deleteTaskById(Long id) {
-        return tasks.removeIf(task -> task.getId().equals(id));
-    }
-    public Task updateTask(Long id, Task updatedTask) {
-        for (Task task : tasks) {
-            if (task.getId().equals(id)) {
-                task.setTitle(updatedTask.getTitle());
-                task.setCompleted(updatedTask.isCompleted());
-                task.setDueDate(updatedTask.getDueDate());
-                return task;
-            }
-        }
-        return null;
+        taskRepository.deleteById(id);
+        return true;
     }
 
+    public Task updateTask(Long id, Task updatedTask) {
+        return taskRepository.findById(id)
+                .map(task -> {
+                    task.setTitle(updatedTask.getTitle());
+                    task.setCompleted(updatedTask.isCompleted());
+                    task.setDueDate(updatedTask.getDueDate());
+                    task.setDescription(updatedTask.getDescription());
+                    return taskRepository.save(task);
+                })
+                .orElse(null);
+    }
 }
+

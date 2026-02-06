@@ -34,6 +34,8 @@ function App() {
       .then(createdTask => {
         setTasks([...tasks, createdTask]);
         setNewTaskTitle("");
+        setNewTaskDate("");
+        setNewTaskDescription("");
       });
   };
 
@@ -43,6 +45,25 @@ function App() {
     });
 
     setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const toggleTask = async (task) => {
+    const updatedTask = {
+      ...task,
+      completed: !task.completed
+    };
+
+    const res = await fetch(`http://localhost:8080/api/tasks/${task.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updatedTask)
+    });
+
+    const data = await res.json();
+
+    setTasks(tasks.map(t => (t.id === task.id ? data : t)));
   };
 
 return (
@@ -58,7 +79,7 @@ return (
       {/* TASKS */}
       <div style={{ flex: 1 }}>
 
-        <h2>My Tasks</h2>
+        <h2>My Tasks ({tasks.length})</h2>
 
         <input
           type="text"
@@ -82,16 +103,48 @@ return (
 
         <button onClick={addTask}>Add Task</button>
 
-        <ul>
+        <div>
           {tasks.map(task => (
-            <li key={task.id}>
-              <strong>{task.title}</strong>
-              <div>{task.description}</div>
-              <div>{task.dueDate}</div>
-              <button onClick={() => deleteTask(task.id)}>Delete</button>
-            </li>
+            <div
+              key={task.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px",
+                borderBottom: "1px solid #ddd"
+              }}
+            >
+              <div>
+                <div style={{ fontWeight: "bold" }}>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask(task)}
+                  />
+                  {" "}
+                  <span style={{
+                    textDecoration: task.completed ? "line-through" : "none",
+                    color: task.completed ? "#888" : "#000"
+                  }}>
+                    {task.title}
+                  </span>
+                </div>
+                <div style={{ fontSize: "12px", color: "#666" }}>
+                  {task.description}
+                </div>
+              </div>
+
+              <div style={{ fontSize: "12px" }}>
+                {task.dueDate}
+              </div>
+
+              <button onClick={() => deleteTask(task.id)}>
+                Delete
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
 
       </div>
 
