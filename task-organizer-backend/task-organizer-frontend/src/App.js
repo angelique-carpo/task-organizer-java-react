@@ -55,10 +55,11 @@ function App() {
 
   // deleting tasks
   const deleteTask = async (id) => {
+    const confirmDelete = window.confirm("Delete this plan?");
+    if (!confirmDelete) return;
     await fetch(`http://localhost:8080/api/tasks/${id}`, {
       method: "DELETE",
     });
-
     setTasks(prev => prev.filter(task => task.id !== id));
   };
 
@@ -145,6 +146,7 @@ function App() {
               className="task-date"
               value={newTaskDate}
               onChange={(e) => setNewTaskDate(e.target.value)}
+              placeholder="dd/mm/yyyy"
             />
 
             <button className="add-btn" onClick={addTask}>
@@ -153,7 +155,12 @@ function App() {
           </div>
 
           <div>
-            {tasks.map(task => (
+            {tasks.length === 0 ? (
+                <p style={{ color: "#777", marginTop: "10px" }}>
+                  No plans yet — start by adding one ✨
+                </p>
+              ) : (
+                tasks.map(task => (
               <div key={task.id} className="task-row">
 
                 <div className="task-info">
@@ -232,7 +239,8 @@ function App() {
                 </div>
 
               </div>
-            ))}
+               ))
+            )}
           </div>
         </div>
 
