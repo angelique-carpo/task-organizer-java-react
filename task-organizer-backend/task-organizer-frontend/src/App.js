@@ -1,20 +1,34 @@
 import { useEffect, useState } from "react";
 import TaskCalendar from "./components/TaskCalendar";
+import "./App.css";
 
 function App() {
 
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [newTaskDate, setNewTaskDate] = useState(null);
+  const [newTaskDate, setNewTaskDate] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
+  const [editingDescription, setEditingDescription] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [editingDueDate, setEditingDueDate] = useState("");
 
+  // loading tasks from backend
   useEffect(() => {
     fetch("http://localhost:8080/api/tasks")
       .then(res => res.json())
-      .then(data => setTasks(data));
+      .then(data => {
+
+        if (Array.isArray(data)) {
+          setTasks(data);
+        } else {
+          setTasks([]);
+        }
+      })
+      .catch(() => setTasks([]));
   }, []);
 
+  // adding tasks
   const addTask = () => {
     if (!newTaskTitle.trim()) return;
 
@@ -27,26 +41,28 @@ function App() {
         title: newTaskTitle,
         description: newTaskDescription,
         completed: false,
-        dueDate: newTaskDate
+        dueDate: newTaskDate || null
       })
     })
       .then(res => res.json())
       .then(createdTask => {
-        setTasks([...tasks, createdTask]);
+        setTasks(prev => [...prev, createdTask]);
         setNewTaskTitle("");
         setNewTaskDate("");
         setNewTaskDescription("");
       });
   };
 
+  // deleting tasks
   const deleteTask = async (id) => {
     await fetch(`http://localhost:8080/api/tasks/${id}`, {
       method: "DELETE",
     });
 
-    setTasks(tasks.filter((task) => task.id !== id));
+    setTasks(prev => prev.filter(task => task.id !== id));
   };
 
+  // toggle completed
   const toggleTask = async (task) => {
     const updatedTask = {
       ...task,
@@ -62,102 +78,174 @@ function App() {
     });
 
     const data = await res.json();
-
-    setTasks(tasks.map(t => (t.id === task.id ? data : t)));
+    setTasks(prev => prev.map(t => t.id === task.id ? data : t));
   };
 
-return (
-  <div style={{ padding: "20px" }}>
-    <h1>Task Organizer</h1>
+  // editing start
+  const startEdit = (task) => {
+    setEditingTaskId(task.id);
+    setEditingTitle(task.title);
+    setEditingDueDate(task.dueDate || "");
+    setEditingDescription(task.description || "");
+  };
 
-    <div style={{
-      display: "flex",
-      gap: "30px",
-      alignItems: "flex-start"
-    }}>
+  // save editing
+  const saveEdit = (task) => {
+    fetch(`http://localhost:8080/api/tasks/${task.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...task,
+        title: editingTitle,
+        description: editingDescription,
+        dueDate: editingDueDate || null
+      })
+    })
+      .then(res => res.json())
+      .then(updatedTask => {
+        setTasks(prev => prev.map(t => t.id === task.id ? updatedTask : t));
+        setEditingTaskId(null);
+        setEditingTitle("");
+        setEditingDueDate("");
+      });
+  };
 
-      {/* TASKS */}
-      <div style={{ flex: 1 }}>
+  return (
+    <div className="app-container">
+      <h1>Task Organizer</h1>
 
-        <h2>My Tasks ({tasks.length})</h2>
+      <div style={{ display: "flex", gap: "30px", alignItems: "flex-start" }}>
 
-        <input
-          type="text"
-          placeholder="Enter new task..."
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
-        />
+        {/* TASKS */}
+        <div style={{ flex: 1 }}>
+          <h2>My Tasks ({tasks.length})</h2>
 
-        <input
-          type="text"
-          placeholder="Task description..."
-          value={newTaskDescription}
-          onChange={(e) => setNewTaskDescription(e.target.value)}
-        />
+          <div className="task-input-row">
 
-        <input
-          type="date"
-          value={newTaskDate}
-          onChange={(e) => setNewTaskDate(e.target.value)}
-        />
+            <input
+              type="text"
+              placeholder="Task title..."
+              className="task-input"
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+            />
 
-        <button onClick={addTask}>Add Task</button>
+            <input
+              type="text"
+              placeholder="Description..."
+              className="task-input"
+              value={newTaskDescription}
+              onChange={(e) => setNewTaskDescription(e.target.value)}
+            />
 
-        <div>
-          {tasks.map(task => (
-            <div
-              key={task.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "10px",
-                borderBottom: "1px solid #ddd"
-              }}
-            >
-              <div>
-                <div style={{ fontWeight: "bold" }}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => toggleTask(task)}
-                  />
-                  {" "}
-                  <span style={{
-                    textDecoration: task.completed ? "line-through" : "none",
-                    color: task.completed ? "#888" : "#000"
-                  }}>
-                    {task.title}
-                  </span>
+            <input
+              type="date"
+              className="task-date"
+              value={newTaskDate}
+              onChange={(e) => setNewTaskDate(e.target.value)}
+            />
+
+            <button className="add-btn" onClick={addTask}>
+              Add Task
+            </button>
+          </div>
+
+          <div>
+            {tasks.map(task => (
+              <div key={task.id} className="task-row">
+
+                <div className="task-info">
+                  <div className="task-title">
+                    <input
+                      type="checkbox"
+                      checked={task.completed}
+                      onChange={() => toggleTask(task)}
+                    />
+
+                    {editingTaskId === task.id ? (
+                      <input
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        className="task-input"
+                      />
+                    ) : (
+                      <span
+                        style={{
+                          textDecoration: task.completed ? "line-through" : "none",
+                          color: task.completed ? "#888" : "#000"
+                        }}
+                      >
+                        {task.title}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="task-desc">
+                    {editingTaskId === task.id ? (
+                      <input
+                        value={editingDescription}
+                        onChange={(e) => setEditingDescription(e.target.value)}
+                        className="task-input"
+                      />
+                    ) : (
+                      task.description
+                    )}
+                  </div>
+                  </div>
+
+                <div>
+
+                  {editingTaskId === task.id ? (
+                    <input
+                      type="date"
+                      value={editingDueDate}
+                      onChange={(e) => setEditingDueDate(e.target.value)}
+                      className="task-date"
+                    />
+                  ) : (
+                    <span className="task-date">
+                      {task.dueDate
+                        ? new Date(task.dueDate).toLocaleDateString("el-GR")
+                        : ""}
+                    </span>
+                  )}
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteTask(task.id)}
+                  >
+                    Delete
+                  </button>
+
+                  {editingTaskId === task.id ? (
+                    <button onClick={() => saveEdit(task)}>
+                      Save
+                    </button>
+                  ) : (
+                    <button onClick={() => startEdit(task)}>
+                      Edit
+                    </button>
+                  )}
+
                 </div>
-                <div style={{ fontSize: "12px", color: "#666" }}>
-                  {task.description}
-                </div>
-              </div>
 
-              <div style={{ fontSize: "12px" }}>
-                {task.dueDate}
               </div>
+            ))}
+          </div>
+        </div>
 
-              <button onClick={() => deleteTask(task.id)}>
-                Delete
-              </button>
-            </div>
-          ))}
+        //calendar
+        <div style={{ width: "350px" }}>
+          <TaskCalendar />
         </div>
 
       </div>
-
-      {/* CALENDAR */}
-      <div style={{ width: "350px" }}>
-        <TaskCalendar />
-      </div>
-
     </div>
-  </div>
-);
-
+  );
 }
 
 export default App;
+
 
