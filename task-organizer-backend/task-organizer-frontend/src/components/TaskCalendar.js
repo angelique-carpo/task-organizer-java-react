@@ -8,7 +8,7 @@ function TaskCalendar() {
 
   return (
     <div style={{ marginTop: "20px" }}>
-      <h3>Task Calendar</h3>
+      <h2>Monthly Calendar</h2>
       <Calendar onChange={setValue} value={value} locale="el-GR" />
     </div>
   );

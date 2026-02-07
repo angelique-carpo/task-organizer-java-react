@@ -114,19 +114,19 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>Task Organizer</h1>
+      <h1>DayPlan</h1>
+      <p className = "subtitle">Plan your day. Track what matters </p>
 
       <div style={{ display: "flex", gap: "30px", alignItems: "flex-start" }}>
 
-        {/* TASKS */}
         <div style={{ flex: 1 }}>
-          <h2>My Tasks ({tasks.length})</h2>
+          <h2>My Plans ({tasks.length})</h2>
 
           <div className="task-input-row">
 
             <input
               type="text"
-              placeholder="Task title..."
+              placeholder="Insert plan title..."
               className="task-input"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
@@ -134,7 +134,7 @@ function App() {
 
             <input
               type="text"
-              placeholder="Description..."
+              placeholder="Plan description..."
               className="task-input"
               value={newTaskDescription}
               onChange={(e) => setNewTaskDescription(e.target.value)}
@@ -148,7 +148,7 @@ function App() {
             />
 
             <button className="add-btn" onClick={addTask}>
-              Add Task
+              Add Plan
             </button>
           </div>
 
@@ -207,7 +207,7 @@ function App() {
                   ) : (
                     <span className="task-date">
                       {task.dueDate
-                        ? new Date(task.dueDate).toLocaleDateString("el-GR")
+                        ? new Date(task.dueDate).toLocaleDateString("el-GR", {day:"2-digit",month:"2-digit",year:"numeric"})
                         : ""}
                     </span>
                   )}
@@ -236,7 +236,7 @@ function App() {
           </div>
         </div>
 
-        //calendar
+
         <div style={{ width: "350px" }}>
           <TaskCalendar />
         </div>
