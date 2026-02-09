@@ -84,5 +84,17 @@ This project runs locally using:
 
 The backend provides REST endpoints and the frontend consumes them via HTTP requests.
 
+## Future Improvements
+
+Planned improvements for next iterations:
+
+* Backend validation for fields (title, description, dates)
+*  Global error handling
+* Separation of React components (TaskList, TaskItem, TaskForm)
+* Environment variables for API URLs
+* Loading and error states in UI
+* Authentication (JWT)
+* Deployment to cloud environment
+
 ## Author
 Final project developed as part of the SEV & AUEB training program.
