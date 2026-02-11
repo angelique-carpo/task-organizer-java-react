@@ -3,6 +3,8 @@ package com.example.task_organizer_backend.service;
 import com.example.task_organizer_backend.model.Task;
 import com.example.task_organizer_backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
+import com.example.task_organizer_backend.exceptions.TaskNotFoundException;
+
 
 import java.util.List;
 
@@ -20,9 +22,6 @@ public class TaskService {
     }
 
     public Task addTask(Task task) {
-        if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
-            return null;
-        }
         return taskRepository.save(task);
     }
 
@@ -40,7 +39,8 @@ public class TaskService {
                     task.setDescription(updatedTask.getDescription());
                     return taskRepository.save(task);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
+
     }
 }
 

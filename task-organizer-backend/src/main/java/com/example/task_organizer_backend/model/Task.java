@@ -2,6 +2,8 @@ package com.example.task_organizer_backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Task {
@@ -10,9 +12,13 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 100, message = "Title must be at most 100 characters")
     private String title;
     private boolean completed;
     private LocalDate dueDate;
+
+    @Size(max = 500, message = "Description must be at most 500 characters")
     private String description;
 
     public Task() {

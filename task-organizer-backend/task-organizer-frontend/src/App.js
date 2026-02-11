@@ -5,6 +5,9 @@ import "./App.css";
 function App() {
 
   const [tasks, setTasks] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDate, setNewTaskDate] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
@@ -16,42 +19,50 @@ function App() {
   // loading tasks from backend
   useEffect(() => {
     fetch("http://localhost:8080/api/tasks")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to load tasks");
+        }
+        return res.json();
+      })
       .then(data => {
-
         if (Array.isArray(data)) {
           setTasks(data);
         } else {
           setTasks([]);
         }
       })
-      .catch(() => setTasks([]));
+      .catch(err => {
+        console.error("ERROR LOADING TASKS:", err);
+        setTasks([]);
+      });
   }, []);
 
   // adding tasks
-  const addTask = () => {
-    if (!newTaskTitle.trim()) return;
-
-    fetch("http://localhost:8080/api/tasks", {
+  const addTask = async () => {
+    const res = await fetch("http://localhost:8080/api/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        title: newTaskTitle,
-        description: newTaskDescription,
-        completed: false,
-        dueDate: newTaskDate || null
+        title: title,
+        description: description,
+        dueDate: dueDate,
+        completed: false
       })
-    })
-      .then(res => res.json())
-      .then(createdTask => {
-        setTasks(prev => [...prev, createdTask]);
-        setNewTaskTitle("");
-        setNewTaskDate("");
-        setNewTaskDescription("");
-      });
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      alert(error.title || "Failed to create task");
+      return;
+    }
+
+    const data = await res.json();
+    setTasks([...tasks, data]);
   };
+
 
   // deleting tasks
   const deleteTask = async (id) => {
