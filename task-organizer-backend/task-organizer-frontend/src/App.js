@@ -7,6 +7,9 @@ import "./App.css";
 function App() {
 
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTitle, setEditingTitle] = useState("");
@@ -14,6 +17,9 @@ function App() {
 
   // loading tasks from backend
   useEffect(() => {
+    setLoading(true);
+    setError("");
+
     fetch(process.env.REACT_APP_API_URL)
       .then(res => {
         if (!res.ok) {
@@ -30,7 +36,11 @@ function App() {
       })
       .catch(err => {
         console.error("ERROR LOADING TASKS:", err);
+        setError("Failed to load tasks");
         setTasks([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -52,6 +62,8 @@ function App() {
 
     const data = await res.json();
     setTasks(prev => [...prev, data]);
+    setMessage("Task added successfully");
+    setTimeout(() => setMessage(""), 2500);
   };
 
 
@@ -63,6 +75,8 @@ function App() {
       method: "DELETE",
     });
     setTasks(prev => prev.filter(task => task.id !== id));
+    setMessage("Task deleted");
+    setTimeout(() => setMessage(""), 2500);
   };
 
   // toggle completed
@@ -112,6 +126,8 @@ function App() {
         setEditingTaskId(null);
         setEditingTitle("");
         setEditingDueDate("");
+        setMessage("Task updated");
+        setTimeout(() => setMessage(""), 2500);
       });
   };
 
@@ -128,6 +144,14 @@ function App() {
             <div className="task-input-row">
               <TaskForm onAddTask={addTask} />
             </div>
+
+            {loading && <p style={{ color: "#555" }}>Loading tasks...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            {message && (
+              <p style={{ color: "green", fontWeight: "bold" }}>
+                {message}
+              </p>
+            )}
 
             <TaskList
               tasks={tasks}
