@@ -167,6 +167,44 @@ font-size:22px;
 font-weight:600;
 }
 
+button {
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+button:focus,
+.task-input:focus,
+.task-date:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
+.task-row:hover {
+  border-color: #dcdcdc;
+}
+
+.status-message {
+  margin: 10px 0 15px;
+  font-size: 14px;
+}
+
+.status-success {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.status-error {
+  color: #c62828;
+  font-weight: 500;
+}
+
+.status-loading {
+  color: #555;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

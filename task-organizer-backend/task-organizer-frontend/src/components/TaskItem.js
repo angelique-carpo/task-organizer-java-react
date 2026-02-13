@@ -62,6 +62,7 @@ function TaskItem({
           <input
             type="date"
             value={editingDueDate}
+            min={new Date().toISOString().split("T")[0]}
             onChange={(e) => setEditingDueDate(e.target.value)}
             className="task-date"
           />
@@ -100,4 +101,5 @@ function TaskItem({
 }
 
 export default TaskItem;
+
 

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.FutureOrPresent;
 
 @Entity
 public class Task {
@@ -16,6 +18,9 @@ public class Task {
     @Size(max = 100, message = "Title must be at most 100 characters")
     private String title;
     private boolean completed;
+
+    @NotNull(message = "Due date is required")
+    @FutureOrPresent(message = "Due date must be today or future")
     private LocalDate dueDate;
 
     @Size(max = 500, message = "Description must be at most 500 characters")

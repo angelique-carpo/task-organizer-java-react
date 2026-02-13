@@ -145,16 +145,15 @@ function App() {
               <TaskForm onAddTask={addTask} />
             </div>
 
-            {loading && <p style={{ color: "#555" }}>Loading tasks...</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {message && (
-              <p style={{ color: "green", fontWeight: "bold" }}>
-                {message}
-              </p>
-            )}
+            {loading && <p className="status-message status-loading">Loading tasks...</p>}
+            {error && <p className="status-message status-error">{error}</p>}
+            {message && <p className="status-message status-success">{message}</p>}
+
 
             <TaskList
               tasks={tasks}
+              loading={loading}
+              error={error}
               toggleTask={toggleTask}
               deleteTask={deleteTask}
               startEdit={startEdit}

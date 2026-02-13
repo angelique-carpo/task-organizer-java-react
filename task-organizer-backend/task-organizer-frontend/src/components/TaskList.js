@@ -3,6 +3,8 @@ import TaskItem from "./TaskItem";
 
 function TaskList({
   tasks,
+  loading,
+  error,
   toggleTask,
   deleteTask,
   startEdit,
@@ -15,6 +17,14 @@ function TaskList({
   setEditingDescription,
   setEditingDueDate
 }) {
+  if (loading) {
+    return <p style={{ color: "#555" }}>Loading tasks...</p>;
+  }
+
+  if (error) {
+    return <p style={{ color: "red" }}>{error}</p>;
+  }
+
   if (tasks.length === 0) {
     return <p>No plans yet — start by adding one ✨</p>;
   }

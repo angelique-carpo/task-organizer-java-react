@@ -40,10 +40,16 @@ function TaskForm({ onAddTask }) {
       <input
         type="date"
         value={dueDate}
+        min={new Date().toISOString().split("T")[0]}
         onChange={(e) => setDueDate(e.target.value)}
       />
 
-      <button type="submit">Add Plan</button>
+      <button
+        type="submit"
+        disabled={!title || !dueDate}
+      >
+        Add Plan
+      </button>
     </form>
   );
 }
