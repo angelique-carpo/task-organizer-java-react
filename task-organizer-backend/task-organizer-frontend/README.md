@@ -1,8 +1,10 @@
 # DayPlan
 
-A simple web application for planning daily activities and tracking important tasks.
+DayPlan is a simple full-stack web application for organizing daily activities and tracking important tasks.
 
-Built as the final project of the SEV & Athens University of Economics and Business (AUEB) training program.
+It was developed as the final project of the SEV & Athens University of Economics and Business (AUEB) training program.
+
+The application demonstrates basic full-stack development concepts using a React frontend and a Spring Boot backend.
 
 ## Purpose
 
@@ -12,6 +14,7 @@ The goal of this project was to practice full-stack development:
 * implementing REST API communication
 * performing CRUD operations
 * managing application state
+* applying basic validation
 * designing a simple and usable UI
 
 ## Features
@@ -21,6 +24,10 @@ The goal of this project was to practice full-stack development:
 * Delete plans
 * Mark plans as completed
 * Monthly calendar view
+* Form validation (title & due date required)
+* Prevention of past dates
+* Loading and error feedback in UI
+* Success messages after actions
 * Clean and minimal UI
 
 ## Technologies Used
@@ -28,6 +35,7 @@ The goal of this project was to practice full-stack development:
 ### Frontend
 * React
 * CSS
+* Fetch API
 
 
 ### Backend
@@ -35,9 +43,10 @@ The goal of this project was to practice full-stack development:
 * Java
 * REST API
 * JPA / Hibernate
+* Bean Validation
 
 ### Database
-* H2 (embedded)
+* H2 (embedded database for development)
 
 ## Project Structure
 task-organizer-backend/
@@ -53,7 +62,7 @@ task-organizer-frontend/
 
 ## Build & Run the Project Locally
 
-1. Run Backend
+### 1. Run Backend
 
 From the backend folder:
 
@@ -62,13 +71,13 @@ mvnw spring-boot:run
 The Spring Boot server starts at:
 [http://localhost:8080](http://localhost:8080)
 
-2. Install Frontend Dependencies
+### 2. Install Frontend Dependencies
 
 From the frontend folder:
 
 npm install
 
-3. Run Frontend
+### 3. Run Frontend
 
 npm start
 
@@ -77,24 +86,21 @@ The application starts at:
 
 ## Deployment
 
-This project runs locally using:
+The backend exposes REST endpoints for task management.  
+The React frontend communicates with the backend using HTTP requests and updates the UI accordingly.
 
-* Spring Boot backend server
-* React development server
-
-The backend provides REST endpoints and the frontend consumes them via HTTP requests.
+Environment variables are used for configuring the API base URL.
 
 ## Future Improvements
 
-Planned improvements for next iterations:
+Planned improvements for extending the project:
 
-* Backend validation for fields (title, description, dates)
-*  Global error handling
-* Separation of React components (TaskList, TaskItem, TaskForm)
-* Environment variables for API URLs
-* Loading and error states in UI
 * Authentication (JWT)
+* Role-based access
+* Persistent database (PostgreSQL/MySQL)
 * Deployment to cloud environment
+* Improved UI styling
+* Mobile responsiveness
 
 ## Author
 Final project developed as part of the SEV & AUEB training program.
